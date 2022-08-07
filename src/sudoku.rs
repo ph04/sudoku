@@ -8,6 +8,7 @@ pub struct Sudoku {
 }
 
 impl Sudoku {
+    /// Flattens a given `[[u8; 9]; 9]` into a `[u8; 81]`.
     fn flatten(input_grid: [[u8; 9]; 9]) -> [u8; 81] {
         let mut grid = [0; 81];
 
