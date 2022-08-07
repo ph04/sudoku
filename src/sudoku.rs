@@ -132,9 +132,55 @@ impl TryFrom<[u8; 81]> for Sudoku {
     }
 }
 
+impl TryFrom<[[u8; 9]; 9]> for Sudoku {
+    type Error = SudokuError;
+
+    fn try_from(input_grid: [[u8; 9]; 9]) -> Result<Self, Self::Error> {
+        if input_grid.iter().any(|row| row.iter().any(|n| *n > 9)) {
+            Err(SudokuError::InvalidCell)
+        } else {
+            let mut grid = [0; 81];
+
+            grid
+                .chunks_exact_mut(9)
+                .zip(input_grid.iter())
+                .for_each(|(row, input_row)| {
+                    row
+                        .iter_mut()
+                        .zip(input_row.iter())
+                        .for_each(|(r, ir)| *r = *ir);
+                });
+
+            Ok(Self {
+                grid,
+                is_solved: false,
+            })
+        }
+
+    }
+}
+
 impl std::cmp::PartialEq<[u8; 81]> for Sudoku {
     fn eq(&self, other: &[u8; 81]) -> bool {
         self.grid() == *other
+    }
+}
+
+impl std::cmp::PartialEq<[[u8; 9]; 9]> for Sudoku {
+    fn eq(&self, other: &[[u8; 9]; 9]) -> bool {
+        let mut grid = [0; 81];
+
+        grid
+            .chunks_exact_mut(9)
+            .zip(other.iter())
+            .for_each(|(row, input_row)| {
+                row
+                    .iter_mut()
+                    .zip(input_row.iter())
+                    .for_each(|(r, ir)| *r = *ir);
+            });
+
+        *self == grid
     }
 }
 
