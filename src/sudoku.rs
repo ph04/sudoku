@@ -202,15 +202,17 @@ impl std::fmt::Display for Sudoku {
     }
 }
 
+/// Error enum used to return errors when invalid grids are given.
 #[derive(Debug)]
 pub enum SudokuError {
+    /// The case when there is a number greater than 9.
     InvalidCell
 }
 
 impl std::fmt::Display for SudokuError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match *self {
-            Self::InvalidCell => writeln!(f, "There are invalid cells in the given sudoku."),
+            Self::InvalidCell => writeln!(f, "There are invalid cells (greater than 9) in the given sudoku."),
         }
     }
 }
