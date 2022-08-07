@@ -1,3 +1,5 @@
+use std::fmt::Write;
+
 /// Represents a sudoku grid.
 #[derive(Debug, Clone, Copy)]
 pub struct Sudoku {
@@ -43,9 +45,7 @@ impl Sudoku {
 
     /// Checks if the given number can be put in the given position.
     fn is_valid(&self, number: u8, (x, y): (usize, usize)) -> bool {
-        self.is_row_valid(number, y) && 
-        self.is_column_valid(number, x) &&
-        self.is_cell_valid(number, (x, y))
+        self.is_row_valid(number, y) && self.is_column_valid(number, x) && self.is_cell_valid(number, (x, y))
     }
 
     /// Transforms the given index into a coordinates pair.
@@ -150,19 +150,22 @@ impl Default for Sudoku {
 
 impl std::fmt::Display for Sudoku {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "{}",
-            self.grid
-                .chunks_exact(9)
-                .map(|row| {
-                    row
-                        .iter()
-                        .map(|n| if *n != 0 { n.to_string() } else { " ".to_owned()})
-                        .intersperse(' '.to_string())
-                        .collect::<String>()
-                })
-                .intersperse('\n'.to_string())
-                .collect::<String>()
-        )
+        self.grid
+            .chunks_exact(9)
+            .flat_map(|row|
+                row
+                    .iter()
+                    .map(|n|
+                        if *n != 0 {
+                            char::from_digit(*n as u32, 10).unwrap()
+                        } else {
+                            '_'
+                        }
+                    )
+                    .intersperse(' ')
+                    .chain(Some('\n'))
+            )
+            .try_for_each(|c| f.write_char(c))
     }
 }
 
