@@ -155,13 +155,7 @@ impl std::fmt::Display for Sudoku {
             .flat_map(|row|
                 row
                     .iter()
-                    .map(|n|
-                        if *n != 0 {
-                            char::from_digit(*n as u32, 10).unwrap()
-                        } else {
-                            '_'
-                        }
-                    )
+                    .map(|n| if *n != 0 { char::from_digit(*n as u32, 10).unwrap() } else { '_' })
                     .intersperse(' ')
                     .chain(Some('\n'))
             )
