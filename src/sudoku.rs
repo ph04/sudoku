@@ -8,6 +8,22 @@ pub struct Sudoku {
 }
 
 impl Sudoku {
+    fn flatten(input_grid: [[u8; 9]; 9]) -> [u8; 81] {
+        let mut grid = [0; 81];
+
+        grid
+            .chunks_exact_mut(9)
+            .zip(input_grid.iter())
+            .for_each(|(row, input_row)| {
+                row
+                    .iter_mut()
+                    .zip(input_row.iter())
+                    .for_each(|(r, ir)| *r = *ir);
+            });
+
+        grid
+    }
+
     /// Checks if the given number can be put in the given row.
     fn is_row_valid(&self, number: u8, row_index: usize) -> bool {
         !self.grid
@@ -139,20 +155,8 @@ impl TryFrom<[[u8; 9]; 9]> for Sudoku {
         if input_grid.iter().any(|row| row.iter().any(|n| *n > 9)) {
             Err(SudokuError::InvalidCell)
         } else {
-            let mut grid = [0; 81];
-
-            grid
-                .chunks_exact_mut(9)
-                .zip(input_grid.iter())
-                .for_each(|(row, input_row)| {
-                    row
-                        .iter_mut()
-                        .zip(input_row.iter())
-                        .for_each(|(r, ir)| *r = *ir);
-                });
-
             Ok(Self {
-                grid,
+                grid: Self::flatten(input_grid),
                 is_solved: false,
             })
         }
@@ -168,19 +172,7 @@ impl std::cmp::PartialEq<[u8; 81]> for Sudoku {
 
 impl std::cmp::PartialEq<[[u8; 9]; 9]> for Sudoku {
     fn eq(&self, other: &[[u8; 9]; 9]) -> bool {
-        let mut grid = [0; 81];
-
-        grid
-            .chunks_exact_mut(9)
-            .zip(other.iter())
-            .for_each(|(row, input_row)| {
-                row
-                    .iter_mut()
-                    .zip(input_row.iter())
-                    .for_each(|(r, ir)| *r = *ir);
-            });
-
-        *self == grid
+        *self == Self::flatten(*other)
     }
 }
 
