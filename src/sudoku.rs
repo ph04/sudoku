@@ -1,6 +1,7 @@
 use std::fmt::Write;
 
-/// Represents a sudoku grid.
+/// Represents a sudoku grid. The grid is represented
+/// using a [u8; 81] array, and the blank cells are represented with `0`s.
 #[derive(Debug, Clone, Copy)]
 pub struct Sudoku {
     grid: [u8; 81],
