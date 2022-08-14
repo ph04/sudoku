@@ -67,16 +67,8 @@ impl Sudoku {
     }
 
     /// Transforms the given index into a coordinates pair.
-    fn get_coordinates(mut curr_idx: usize) -> (usize, usize) {
-        let mut curr_y = 0;
-
-        while curr_idx >= 9 {
-            curr_idx -= 9;
-
-            curr_y += 1;
-        }
-
-        (curr_idx, curr_y)
+    fn get_coordinates(curr_idx: usize) -> (usize, usize) {
+        (curr_idx % 9, curr_idx / 9)
     }
 
     /// Recursively solves the sudoku through backtracking,
